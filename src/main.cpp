@@ -1,0 +1,60 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+void analyzeContract(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Error: Could not open file " << filename << endl;
+        return;
+    }
+string line;
+int riskScore = 0;
+vector<string> findings;
+while (getline(file, line)) {
+        // Check for reentrancy pattern indicator
+        if (line.find(".call{value:") != string::npos) {
+            riskScore += 40;
+            findings.push_back("[HIGH] Potential Reentrancy vector found (.call{value:...})");
+        }
+        // Check for tx.origin : Authentication Risk
+        if (line.find("tx.origin") != string::npos) {
+            riskScore += 30;
+            findings.push_back("[MEDIUM] Use of 'tx.origin' detected for authentication (Phishing risk)");
+        }
+        // Check for assembly blocks
+        if (line.find("assembly") != string::npos) {
+            riskScore += 20;
+            findings.push_back("[INFO] Inline assembly block found (Requires manual review)");
+        }
+    }
+
+    file.close();
+
+    cout << "\n[*] Analyzing target: " << filename << endl;
+    cout << "----------------------------------------" << endl;
+    if (!findings.empty()) {
+        for (const string& finding : findings) {
+            cout << "  - " << finding << endl;
+        }
+    } else {
+        cout << "  - No obvious high-risk patterns detected." << endl;
+    }
+    cout << "----------------------------------------" << endl;
+    cout << "Final Calculated Risk Score: " << riskScore << " / 100" << endl;
+    
+    if (riskScore >= 50) {
+        cout << "Status: 🔴 HIGH RISK (Vulnerabilities found)" << endl;
+    } else if (riskScore > 0) {
+        cout << "Status: 🟡 MEDIUM RISK (Review recommended)" << endl;
+    } else {
+        cout << "Status: 🟢 LOW RISK" << endl;
+    }
+}
+  //(The program name itself counts as 1):argc
+int main(int argc, char* argv[]) {
+    string target = (argc > 1) ? argv[1] : "contracts/vulnerable_sample.sol";
+    analyzeContract(target);
+    return 0;
+}
