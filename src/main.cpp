@@ -4,7 +4,7 @@
 #include <vector>
 using namespace std;
 void analyzeContract(const string& filename) {
-    // Open the target Solidity contract file safely using file streams
+    // Open the target Solidity contract file safely using file streams//
     ifstream file(filename);
     if (!file.is_open()) {
         cout << "Error: Could not open file " << filename << endl;
@@ -13,8 +13,23 @@ void analyzeContract(const string& filename) {
 string line;
 int riskScore = 0;
 vector<string> findings;
+bool inBlockComment = false; // Tracks whether we're inside a /* ... */ block that spans multiple lines
 while (getline(file, line)) {
+        line = line.substr(0, line.find("//")); // Strip "//" comments so comment text isn't scanned as code
+string code;
+       for (size_t i = 0; i < line.size(); ++i) {
+            if (inBlockComment) {
+                if (line.compare(i, 2, "*/") == 0) { inBlockComment = false; 
+                 i++; }
+            } else if (line.compare(i, 2, "/*") == 0) {
+                inBlockComment = true; i++;
+            } else {
+                code += line[i];
+            }
+        }
+           line = code; // From here on, "line" contains only real code, no comment text
         // Check for reentrancy pattern indicator : (unsafe external call before state update)
+     
         if (line.find(".call{value:") != string::npos) {
             riskScore += 40;
             findings.push_back("[HIGH] Potential Reentrancy vector found (.call{value:...})");
@@ -33,7 +48,7 @@ while (getline(file, line)) {
 
     file.close();
 
-    cout << "\n[*] Analyzing target: " << filename << endl;
+    cout << " Analyzing target: " << filename << endl;
     cout << "----------------------------------------" << endl;
     if (!findings.empty()) {
         for (const string& finding : findings) {
@@ -48,17 +63,21 @@ while (getline(file, line)) {
     cout << "Final Calculated Risk Score: " << riskScore << " / 100" << endl;
     
     if (riskScore >= 50) {
-        cout << "Status: 🔴 HIGH RISK (Vulnerabilities found)" << endl;
+        cout << "Status:  HIGH RISK (Vulnerabilities found)" << endl;
     } else if (riskScore > 0) {
-        cout << "Status: 🟡 MEDIUM RISK (Review recommended)" << endl;
+        cout << "Status:  MEDIUM RISK (Review recommended)" << endl;
     } else {
          // Evaluate total findings and output risk  (Low/Medium/High)
-        cout << "Status: 🟢 LOW RISK" << endl;
+        cout << "Status:  LOW RISK" << endl;
        }
 }
-  //(The program name itself counts as 1):argument count
+  //The program name itself counts as 1:argument count
 int main(int argc, char* argv[]) {
-    string target = (argc > 1) ? argv[1] : "contracts/vulnerable_sample.sol";
-    analyzeContract(target);
+   string target = "contract.sol";
+    
+    if (argc > 1) {
+        target = argv[1];
+    }
+     analyzeContract(target);
     return 0;
 }
