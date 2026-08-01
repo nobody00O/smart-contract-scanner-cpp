@@ -38,6 +38,6 @@ g++ -std=c++17 -Wall src/main.cpp -o scanner
 It skips // and /* */ comments so those don't get counted as real code, but that's pretty much it. It's not actually reading/understanding Solidity, just scanning text.
 *Only looks for these 3 patterns right now. Not even close to a real audit tool, more of a first-pass check.
 
-##Why I made this
+## Why I made this
 
 Wanted something that combined learning C++ with an actual security use case, instead of another generic exercise. Picking real vulnerabilities instead of made-up ones made it feel like something worth building.
