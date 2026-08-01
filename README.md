@@ -1,4 +1,4 @@
-##Smart Contract Scanner (C++)
+## Smart Contract Scanner (C++)
 
 A small C++ tool that scans Solidity contracts for a couple of common security bugs — reentrancy and unsafe `tx.origin` checks.
 
@@ -14,7 +14,7 @@ Each match adds to a risk score, and you get a LOW / MEDIUM / HIGH rating at the
 
 It's basically pattern matching on text, line by line — not a real Solidity parser. So it won't catch everything, and it can flag safe code too. More on that below.
 
-## Running it##
+## Running it
 
 ```bash
 git clone https://github.com/nobody00O/smart-contract-scanner-cpp.git
@@ -29,11 +29,11 @@ Just compile directly:
 g++ -std=c++17 -Wall src/main.cpp -o scanner
 
 
- ##Requirements##
+ ## Requirements
 
 - C++17 compiler (g++, clang++, or MSVC)
 
-##Limitations##
+## Limitations
 *It's just checking for text patterns, so sometimes it flags code that's actually fine. Like if .call{value: ...} comes after the balance is already updated (which is the safe way), it still gets flagged as HIGH risk — the tool has no idea about order, it just sees the pattern and reacts.
 It skips // and /* */ comments so those don't get counted as real code, but that's pretty much it. It's not actually reading/understanding Solidity, just scanning text.
 *Only looks for these 3 patterns right now. Not even close to a real audit tool, more of a first-pass check.
