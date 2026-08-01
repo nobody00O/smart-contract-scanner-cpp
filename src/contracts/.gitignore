@@ -1,14 +1,8 @@
-
-
-# Purpose: Tells Git which generated or junk files to ignore and 
-# never upload to GitHub.
-
-
 # Ignore the compiled executable program created by your Makefile
 scanner
 
-# Ignore any temporary object files (files ending in .o) generated during compilation
+# Ignore object files (files ending in .o) generated during compilation
 *.o
 
-# Ignore macOS hidden folder view configuration junk files
+# Ignore macOS system files
 .DS_Store
