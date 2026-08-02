@@ -2,7 +2,7 @@
 
 A small C++ tool that scans Solidity contracts for a couple of common security bugs — reentrancy and unsafe `tx.origin` checks.
 
-I built this to get better at C++ and learn how smart contract vulnerabilities actually look in real code, not just in theory. Not a production tool, just a learning project — but it works.
+I built this to get better at C++ and learn how smart contract vulnerabilities actually look in real code, not just in theory . Just a learning project — but it works.
 
 What it checks for
 
