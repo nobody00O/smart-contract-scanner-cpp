@@ -13,7 +13,7 @@ void analyzeContract(const string& filename) {
 string line;
 int riskScore = 0;
 vector<string> findings;
-bool inBlockComment = false; // Tracks whether we're inside a /* ... */ block that spans multiple lines
+bool inBlockComment = false; // Tracks whether we're inside a /* ... */ , block that spans multiple lines
 while (getline(file, line)) {
         line = line.substr(0, line.find("//")); // Strip "//" comments so comment text isn't scanned as code
 string code;
@@ -27,7 +27,7 @@ string code;
                 code += line[i];
             }
         }
-           line = code; // From here on, "line" contains only real code, no comment text
+           line = code; 
         // Check for reentrancy pattern indicator : (unsafe external call before state update)
      
         if (line.find(".call{value:") != string::npos) {
